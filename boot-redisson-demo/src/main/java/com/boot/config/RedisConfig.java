@@ -1,5 +1,9 @@
 package com.boot.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -17,6 +21,27 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    /**
+     * 将 RedissonClient 加入容器
+     */
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+
+        // 设置 Redisson 编解码器
+        config.setCodec(new JsonJacksonCodec());
+        // 设置为单例模式
+        config.useSingleServer()
+                .setAddress("redis://localhost:6379");
+
+        RedissonClient redissonClient = Redisson.create(config);
+        return redissonClient;
+    }
+
+    /**
+     * 将 RedisTemplate 加入容器
+     * @return RedisTemplate<String, Object>
+     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate template = new RedisTemplate<>();
