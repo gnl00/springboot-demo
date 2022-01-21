@@ -104,8 +104,6 @@ public class RedissonMainAppTest {
             // 解锁
             myRLock.unlock();
         }
-
-
     }
 
     /**
@@ -134,12 +132,13 @@ public class RedissonMainAppTest {
         }
     }
 
+
     /**
      * 在 lock 还未释放的情况下进行 lock 操作
      * 会进入阻塞状态一直等待获取锁，直到获取成功，然后 lock，最后 unlock
      */
     @Test
-    public void testLockLock() {
+    public void testLockWhenLock() {
 
         RLock myRLock = redissonClient.getLock("myRLock");
 
