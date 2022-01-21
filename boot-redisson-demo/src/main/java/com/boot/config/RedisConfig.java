@@ -30,12 +30,26 @@ public class RedisConfig {
 
         // 设置 Redisson 编解码器
         config.setCodec(new JsonJacksonCodec());
-        // 设置为单例模式
+        // 单个 Redis 实例
         config.useSingleServer()
                 .setAddress("redis://localhost:6379");
 
-        RedissonClient redissonClient = Redisson.create(config);
-        return redissonClient;
+        // 主从复制模式
+        // config.useReplicatedServers()
+
+        // 哨兵模式
+        // config.useSentinelServers().addSentinelAddress("", "", "");
+
+        /**
+         * 多个 Redis 集群
+         * config.useClusterServers()
+         *         .addNodeAddress("redis://slave1:6369", "redis://slave2:6379")
+         *         .addNodeAddress("redis://master:6389");
+         */
+
+        // 创建 redisson 实例，并返回，注入到容器中
+        RedissonClient redisson = Redisson.create(config);
+        return redisson;
     }
 
     /**

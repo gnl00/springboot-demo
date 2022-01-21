@@ -7,4 +7,9 @@ spring:
   redis:
     host: localhost
     port: 6379
-    client-type: lettuce
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 20
+    connect-timeout:
