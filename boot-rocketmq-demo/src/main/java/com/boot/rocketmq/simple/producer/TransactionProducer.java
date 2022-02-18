@@ -1,7 +1,6 @@
-package com.boot.rocketmq.producer;
+package com.boot.rocketmq.simple.producer;
 
-import com.boot.rocketmq.listener.TransactionListenerImpl;
-import io.netty.util.concurrent.DefaultThreadFactory;
+import com.boot.rocketmq.simple.listener.TransactionListenerImpl;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
@@ -38,10 +37,9 @@ public class TransactionProducer {
                 Message msg = new Message("tp_default", "tg_trans", "KEY" + i,
                         ("hi, this is transaction msg from TransactionProducer " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
 
-
                 TransactionSendResult result = producer.sendMessageInTransaction(msg, null);
-
-                System.out.println(result);
+                System.out.println("********************");
+                System.out.println("发送第 " + i +" 条消息 " + result);
 
                 Thread.sleep(1000);
             }

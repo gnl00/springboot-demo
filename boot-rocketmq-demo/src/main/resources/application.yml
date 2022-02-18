@@ -1,1 +1,12 @@
+server:
+  port: 8800
 
+spring:
+  application:
+    name: boot-rocketmq
+
+rocketmq:
+  producer:
+    enable: true
+    groupName: ${spring.application.name}
+    namesrvAddr: localhost:9876

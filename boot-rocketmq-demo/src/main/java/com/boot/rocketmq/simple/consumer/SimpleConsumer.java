@@ -1,4 +1,4 @@
-package com.boot.rocketmq.consumer;
+package com.boot.rocketmq.simple.consumer;
 
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -39,7 +39,7 @@ public class SimpleConsumer {
                 @Override
                 public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                     for (MessageExt msg : msgs) {
-                        System.out.println(new String(msg.getBody()));
+                        System.out.println("接受到消息Id " + msg.getTransactionId());
                     }
                     // 返回消费状态为成功
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
