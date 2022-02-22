@@ -1,7 +1,7 @@
 package com.boot.producer.service.impl;
 
-import com.boot.producer.constant.RMQTopic;
 import com.boot.producer.service.ProducerService;
+import com.boot.rocketmq.canstant.RMQConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class ProducerServiceImpl implements ProducerService {
     public Boolean send(String msg) {
         try {
             log.info(System.currentTimeMillis() + " 开始发送");
-            rocketMQTemplate.convertAndSend(RMQTopic.TP_BOOT, msg);
+            rocketMQTemplate.convertAndSend(RMQConstant.TP_BOOT, msg);
             log.info(System.currentTimeMillis() + " 发送成功");
             return true;
         } catch (MessagingException e) {

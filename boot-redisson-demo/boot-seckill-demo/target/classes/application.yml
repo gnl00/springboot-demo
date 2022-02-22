@@ -1,0 +1,5 @@
+server:
+  port: 8866
+
+goods:
+  stock: 100

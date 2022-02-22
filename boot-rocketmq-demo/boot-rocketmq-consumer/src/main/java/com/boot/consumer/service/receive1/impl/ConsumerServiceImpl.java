@@ -1,6 +1,6 @@
-package com.boot.consumer.service.impl;
+package com.boot.consumer.service.receive1.impl;
 
-import com.boot.consumer.service.ConsumerService;
+import com.boot.consumer.service.receive1.ConsumerService;
 import com.boot.rocketmq.canstant.RMQConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -24,7 +24,5 @@ public class ConsumerServiceImpl implements ConsumerService, RocketMQListener<St
         log.info(System.currentTimeMillis() + " 收到消息");
         log.info(message);
     }
-
-
 
 }

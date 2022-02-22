@@ -1,4 +1,4 @@
-package com.boot.consumer.service;
+package com.boot.consumer.service.receive1;
 
 /**
  * ConsumerService
@@ -8,7 +8,5 @@ package com.boot.consumer.service;
  */
 
 public interface ConsumerService {
-
-    
 
 }
