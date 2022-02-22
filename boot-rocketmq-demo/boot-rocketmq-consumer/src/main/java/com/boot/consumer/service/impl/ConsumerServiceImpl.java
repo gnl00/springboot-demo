@@ -1,7 +1,7 @@
 package com.boot.consumer.service.impl;
 
-import com.boot.consumer.constant.RMQTopic;
 import com.boot.consumer.service.ConsumerService;
+import com.boot.rocketmq.canstant.RMQConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RocketMQMessageListener(topic = RMQTopic.TP_BOOT, consumerGroup = "${spring.application.name}")
+@RocketMQMessageListener(topic = RMQConstant.TP_BOOT, consumerGroup = "${spring.application.name}")
 public class ConsumerServiceImpl implements ConsumerService, RocketMQListener<String> {
 
     @Override

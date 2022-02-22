@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>boot-redisson-sample</module>
+        <module>boot-seckill-demo</module>
     </modules>
 
     <parent>
