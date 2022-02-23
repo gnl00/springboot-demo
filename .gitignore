@@ -126,3 +126,4 @@ Temporary Items
 .idea
 *.iml
 target/
+*/target/
