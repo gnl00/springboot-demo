@@ -124,6 +124,5 @@ Temporary Items
 .apdisk
 
 .idea
-*/target
-*/*.iml
 *.iml
+target/
