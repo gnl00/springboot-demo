@@ -1,6 +1,6 @@
-package com.boot.rocketmq.producer;
+package com.rmq.sample.producer;
 
-import com.boot.rocketmq.transaction.TransactionListenerImpl;
+import com.rmq.sample.transaction.TransactionListenerImpl;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.client.producer.TransactionSendResult;

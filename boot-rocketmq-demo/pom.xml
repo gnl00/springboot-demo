@@ -12,9 +12,9 @@
 
     <modules>
         <module>boot-rocketmq-common</module>
-        <module>boot-rocketmq-sample</module>
         <module>boot-rocketmq-producer</module>
         <module>boot-rocketmq-consumer</module>
+        <module>rocketmq-sample</module>
     </modules>
 
     <properties>

@@ -1,4 +1,4 @@
-package com.boot.rocketmq.producer;
+package com.rmq.sample.producer;
 
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
