@@ -1,5 +1,6 @@
 package com.rmq.sample.producer;
 
+import com.rmq.sample.contant.SimpleMQCanstant;
 import com.rmq.sample.transaction.TransactionListenerImpl;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
@@ -23,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 public class TransactionProducer {
     public static void main(String[] args) {
         TransactionListenerImpl listener = new TransactionListenerImpl();
-        TransactionMQProducer producer = new TransactionMQProducer("gp_default");
-        producer.setNamesrvAddr("localhost:9876");
+        TransactionMQProducer producer = new TransactionMQProducer(SimpleMQCanstant.PRODUCER_GROUP);
+        producer.setNamesrvAddr(SimpleMQCanstant.NAME_SERVER);
         ThreadPoolExecutor executor =
                 new ThreadPoolExecutor(2, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
@@ -34,7 +35,7 @@ public class TransactionProducer {
             producer.start();
 
             for (int i = 0; i < 10; i++) {
-                Message msg = new Message("tp_default", "tg_trans", "KEY" + i,
+                Message msg = new Message(SimpleMQCanstant.TOPIC_DEFAULT, "tg_trans", "KEY" + i,
                         ("hi, this is transaction msg from TransactionProducer " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
 
                 TransactionSendResult result = producer.sendMessageInTransaction(msg, null);

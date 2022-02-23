@@ -27,7 +27,7 @@ public class ProducerServiceImpl implements ProducerService {
         try {
             log.info(System.currentTimeMillis() + " 开始发送");
             rocketMQTemplate.convertAndSend(RMQConstant.TP_BOOT, msg);
-            log.info(System.currentTimeMillis() + " 发送成功");
+            log.info(System.currentTimeMillis() + " 发送成功: " + msg);
             return true;
         } catch (MessagingException e) {
             e.printStackTrace();
