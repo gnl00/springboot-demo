@@ -7,28 +7,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * ConsumerServiceImpl2
+ * MyConsumerServiceImpl
  *
  * @author lgn
- * @since 2022/2/22 16:00
+ * @since 2022/2/24 16:35
  */
+
 @Slf4j
 @Service
 @RMQConsumerGroup("gp_default")
-public class ConsumerServiceImpl2 implements BaseService {
+public class MyConsumerServiceImpl implements BaseService {
 
     @RMQListener(topic = "myTopic", tag = "myTag", consumerGroup = "myG", clazz = String.class)
-    public void onMyMessage() {
+    public void onMessage(Object message) {
 
     }
 
-    @RMQListener(topic = "myTopic", tag = "myTag", consumerGroup = "myG", clazz = String.class)
-    public void onMessage1(Object message) {
-
-    }
-
-    @RMQListener(topic = "myTopic", tag = "myTag", consumerGroup = "myG", clazz = String.class)
-    public void onMessage2(Object message) {
-
-    }
 }

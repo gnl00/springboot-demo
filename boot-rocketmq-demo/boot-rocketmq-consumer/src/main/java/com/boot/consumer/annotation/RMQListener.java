@@ -15,20 +15,19 @@ import java.util.Objects;
  * @since 2022/2/22 15:47
  */
 
+@Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
 public @interface RMQListener {
+
+    // 接收消息的消费者组
+    String consumerGroup() default "";
 
     // 接收的消息 topic
     String topic() default "";
 
     // 接收的消息 tag
     String tag() default "";
-
-    // 接收消息的消费者组
-    String consumerGroup() default "";
 
     // 消息类型.class
     Class clazz() default Objects.class;
