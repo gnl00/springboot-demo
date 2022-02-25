@@ -8,4 +8,6 @@ package com.boot.consumer.service;
  */
 public interface BaseService {
 
+    void onBaseMessage(Object message);
+
 }

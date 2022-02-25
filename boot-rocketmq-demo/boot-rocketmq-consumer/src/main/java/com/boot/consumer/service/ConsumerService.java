@@ -1,4 +1,4 @@
-package com.boot.consumer.service.receive1;
+package com.boot.consumer.service;
 
 /**
  * ConsumerService

@@ -20,15 +20,23 @@ import java.util.Objects;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RMQListener {
 
-    // 接收消息的消费者组
+    /**
+     * 接收消息的消费者组
+     */
     String consumerGroup() default "";
 
-    // 接收的消息 topic
+    /**
+     * 接收的消息 topic
+     */
     String topic() default "";
 
-    // 接收的消息 tag
+    /**
+     * 接收的消息 tag
+     */
     String tag() default "";
 
-    // 消息类型.class
-    Class clazz() default Objects.class;
+    /**
+     * 消息类型.class
+     */
+    Class type() default Objects.class;
 }

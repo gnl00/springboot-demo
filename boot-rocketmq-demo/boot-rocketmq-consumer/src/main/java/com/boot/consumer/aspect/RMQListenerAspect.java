@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 
 /**
  * RMQListenerAspect 利用切面类处理标注 @RMQListener 的方法
- * 想法1，切面加pull模式感知到消息发送
+ * <p>
+ * 想法1，切面加 pull 模式感知到消息发送
  * 可以利用切面类和自定义 pull 消息的方法实现，不需要等消息推送
  *
- * 想法2，切面加动态代理，使用代理自动生成类
+ * <p>
+ * ❌ 想法2，配置类加动态代理，使用代理生成带注解的类
  *
  * @author lgn
  * @since 2022/2/22 16:18
