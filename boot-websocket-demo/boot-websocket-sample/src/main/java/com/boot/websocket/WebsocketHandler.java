@@ -1,7 +1,6 @@
 package com.boot.websocket;
 
 import com.boot.controller.WebsocketController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -43,20 +42,14 @@ public class WebsocketHandler {
 
     // 发送消息给客户端
     public void sendMsg(Session toSession) {
+        String myMsg = UUID.randomUUID().toString();
+        System.out.println("发送消息到客户端: " + myMsg);
         try {
-            while (WebsocketController.n < 100) {
-                String myMsg = UUID.randomUUID().toString();
-                System.out.println("发送消息到客户端: " + myMsg);
-                toSession.getBasicRemote().sendText(myMsg);
-
-                Thread.sleep(2000);
-
-                WebsocketController.n++;
-            }
+            toSession.getBasicRemote().sendText(myMsg);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } finally {
+
         }
     }
 
