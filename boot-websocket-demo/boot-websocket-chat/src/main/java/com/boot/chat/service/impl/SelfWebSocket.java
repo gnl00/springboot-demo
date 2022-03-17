@@ -1,6 +1,9 @@
 package com.boot.chat.service.impl;
 
+import com.boot.chat.bean.WSMessage;
 import com.boot.chat.service.WebSocketService;
+import com.boot.chat.util.JacksonUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +11,7 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * SelfWebSocket 自己给自己发消息
@@ -52,12 +56,29 @@ public class SelfWebSocket implements WebSocketService {
     }
 
     @Override
-    public void sendMessage(String message, Session to) {
-        log.info("发送消息: {} 给 {}", message, to.getId());
+    public void sendMessage(String body, Session to) {
+
+        WSMessage<String> msg = new WSMessage<>();
+        msg.setFrom("222222");
+        msg.setTo("111111");
+        msg.setBody(body);
+        msg.setType(body.getClass().toString());
+
 
         try {
-            to.getBasicRemote().sendText(message);
+            String finalMsg = JacksonUtils.writeObjectAsString(msg);
+
+            TimeUnit.SECONDS.sleep(2);
+
+            log.info("发送消息: {} 给 {}", finalMsg, to.getId());
+
+            to.getBasicRemote().sendText(finalMsg);
+            // to.getBasicRemote().sendObject(null);
+        } catch (JsonProcessingException e) {
+            log.error("convert object to json string fail, {}", e.getCause().getMessage());
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
