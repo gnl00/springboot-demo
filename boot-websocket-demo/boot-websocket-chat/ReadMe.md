@@ -1,4 +1,4 @@
-#ChatRoom
+#boot-websocket-chat
 
 ##相关技术
 SpringBoot | WebSocket

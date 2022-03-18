@@ -26,7 +26,7 @@ public class WSMessage<T> {
 
     private String to;
 
-    private Date date = new Date();
+    private long date = System.currentTimeMillis();
 
     private String type;
 

@@ -1,5 +1,6 @@
 package com.boot.chat.util;
 
+import com.boot.chat.bean.WSMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,8 +27,16 @@ public class JacksonUtils {
         }
     }
 
+    /**
+     * Object to json
+     */
     public static String writeObjectAsString(Object obj) throws JsonProcessingException {
         return objectMapper.writeValueAsString(obj);
+    }
+
+    public static WSMessage readValue(String jsonStr) throws JsonProcessingException {
+        WSMessage msgObj = objectMapper.readValue(jsonStr, WSMessage.class);
+        return msgObj;
     }
 
 }

@@ -31,20 +31,20 @@ public class SelfWebSocket implements WebSocketService {
     private static volatile Integer onCount = 0;
 
     @OnOpen
-    public void onOpen() {
+    public void onOpen(Session session) {
         onCount = onCount + 1;
-        log.info("有链接加入， 当前在线人数: {}", onCount);
+        log.info("Self 有链接 {} 加入， 当前在线人数: {}", session.getId(), onCount);
     }
 
     @OnClose
-    public void onClose() {
+    public void onClose(Session session) {
         onCount = onCount - 1;
-        log.info("有链接关闭， 当前在线人数: {}", onCount);
+        log.info("Self 有链接 {} 关闭， 当前在线人数: {}", session.getId(), onCount);
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        log.info("收到 {} 的消息: {}", session.getId(), message);
+        log.info("Self 收到 {} 的消息: {}", session.getId(), message);
 
         String sendMsg = UUID.randomUUID().toString();
         sendMessage(sendMsg, session);
@@ -52,7 +52,7 @@ public class SelfWebSocket implements WebSocketService {
 
     @OnError
     public void onError(Session session, Throwable e) {
-        log.error("链接 {} 出错啦~ {}", session.getId(), e.getCause().getMessage());
+        log.error("Self 有链接 {} 出错啦~ {}", session.getId(), e.getCause().getMessage());
     }
 
     @Override
@@ -64,13 +64,12 @@ public class SelfWebSocket implements WebSocketService {
         msg.setBody(body);
         msg.setType(body.getClass().toString());
 
-
         try {
             String finalMsg = JacksonUtils.writeObjectAsString(msg);
 
             TimeUnit.SECONDS.sleep(2);
 
-            log.info("发送消息: {} 给 {}", finalMsg, to.getId());
+            log.info("Self 发送消息: {} 给 {}", finalMsg, to.getId());
 
             to.getBasicRemote().sendText(finalMsg);
             // to.getBasicRemote().sendObject(null);
