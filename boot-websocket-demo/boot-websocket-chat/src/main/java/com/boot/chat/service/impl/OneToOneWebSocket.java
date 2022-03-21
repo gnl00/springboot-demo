@@ -31,14 +31,18 @@ public class OneToOneWebSocket {
     @OnOpen
     public void onOpen(Session session) {
         onLineUser.put(session.getId(), session);
-        sendInitialMsg(session);
         log.info("ToOne 有链接 {} 加入， 当前在线人数: {}", session.getId(), onLineUser.size());
+
+        sendInitialMsg(session);
+        sendUpdateMsg(session);
     }
 
     @OnClose
     public void onClose(Session session) {
         onLineUser.remove(session.getId());
         log.info("ToOne 有链接 {} 关闭， 当前在线人数: {}", session.getId(), onLineUser.size());
+
+        sendUpdateMsg(session);
     }
 
     @OnError
@@ -70,6 +74,8 @@ public class OneToOneWebSocket {
      * 初始化消息，发送 Id 与当前在线用户
      */
     public void sendInitialMsg(Session session) {
+        log.info("sendInitialMsg...");
+
         Map<String, Object> firstMap = new HashMap<>(2);
         firstMap.put("uid", session.getId());
         firstMap.put("online", onLineUser.keySet().stream().filter(uid -> uid != session.getId()).collect(Collectors.toList()));
@@ -83,6 +89,30 @@ public class OneToOneWebSocket {
             e.printStackTrace();
         }
 
+    }
+
+    public void sendUpdateMsg(Session current) {
+        log.info("sendUpdateMsg...");
+
+        // 更新在线用户数据
+        onLineUser.keySet().stream()
+                .filter(sessionId -> !sessionId.equals(current.getId()))
+                .forEach(sessionId -> {
+                    Map<String, Object> msgMap = new HashMap<>();
+                    msgMap.put("msgType", "update");
+                    msgMap.put("online", onLineUser.keySet().stream().filter(onlineId -> !onlineId.equals(sessionId)).collect(Collectors.toSet()));
+
+                    try {
+                        String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
+                        sendMessage(jsonStr, onLineUser.get(sessionId));
+
+                    } catch (JsonProcessingException e) {
+                        log.error("convert map to json fail, {}", e.getCause().getMessage());
+                        e.printStackTrace();
+                    }
+
+
+                });
     }
 
     /**

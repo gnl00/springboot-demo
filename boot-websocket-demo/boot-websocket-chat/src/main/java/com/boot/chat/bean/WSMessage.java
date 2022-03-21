@@ -28,9 +28,17 @@ public class WSMessage<T> {
 
     private long date = System.currentTimeMillis();
 
-    private String type;
-
     private T body;
+
+    /**
+     * 消息体类型 text or img or video
+     */
+    private String bodyType;
+
+    /**
+     * 消息类型：分为 1、initial 初始化消息 2、update 更新消息 3、contact 对话消息
+     */
+    private String msgType;
 
     private Boolean read = false;
 

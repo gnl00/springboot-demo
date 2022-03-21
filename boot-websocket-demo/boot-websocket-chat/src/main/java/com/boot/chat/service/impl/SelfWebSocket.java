@@ -62,7 +62,7 @@ public class SelfWebSocket implements WebSocketService {
         msg.setFrom("222222");
         msg.setTo("111111");
         msg.setBody(body);
-        msg.setType(body.getClass().toString());
+        msg.setBodyType(body.getClass().toString());
 
         try {
             String finalMsg = JacksonUtils.writeObjectAsString(msg);
