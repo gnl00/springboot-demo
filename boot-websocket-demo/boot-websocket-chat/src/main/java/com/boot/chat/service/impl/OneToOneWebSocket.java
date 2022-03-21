@@ -11,7 +11,9 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -61,11 +63,32 @@ public class OneToOneWebSocket {
 
             // 消息分发给对应的接收方
             String toId = msgObj.getTo();
-            Session toSession = onLineUser.get(toId);
-            messageDelivery(message, toSession);
+
+            if ("websocket-server".equals(toId)) {
+                String msgBody = UUID.randomUUID().toString();
+
+                WSMessage<String> msg = new WSMessage<>();
+                msg.setFrom(toId);
+                msg.setTo(session.getId());
+                msg.setBody(msgBody);
+                msg.setBodyType("text");
+                msg.setMsgType("contact");
+
+                String finalMsg = JacksonUtils.writeObjectAsString(msg);
+                TimeUnit.SECONDS.sleep(2);
+
+                log.info("Self 发送消息: {} 给 {}", finalMsg, session.getId());
+                sendMessage(finalMsg, session);
+
+            } else {
+                Session toSession = onLineUser.get(toId);
+                messageDelivery(message, toSession);
+            }
 
         } catch (JsonProcessingException e) {
             log.error("convert json to object fail, {}", e.getCause().getMessage());
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -76,12 +99,13 @@ public class OneToOneWebSocket {
     public void sendInitialMsg(Session session) {
         log.info("sendInitialMsg...");
 
-        Map<String, Object> firstMap = new HashMap<>(2);
-        firstMap.put("uid", session.getId());
-        firstMap.put("online", onLineUser.keySet().stream().filter(uid -> uid != session.getId()).collect(Collectors.toList()));
+        Map<String, Object> msgMap = new HashMap<>(2);
+        msgMap.put("uid", session.getId());
+        msgMap.put("msgType", "init");
+        msgMap.put("online", onLineUser.keySet().stream().filter(uid -> uid != session.getId()).collect(Collectors.toList()));
 
         try {
-            String jsonStr = JacksonUtils.writeObjectAsString(firstMap);
+            String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
             sendMessage(jsonStr, session);
 
         } catch (JsonProcessingException e) {
@@ -92,6 +116,11 @@ public class OneToOneWebSocket {
     }
 
     public void sendUpdateMsg(Session current) {
+
+        if (count() <= 1) {
+            return;
+        }
+
         log.info("sendUpdateMsg...");
 
         // 更新在线用户数据

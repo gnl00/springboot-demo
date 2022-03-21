@@ -30,6 +30,9 @@ public class SelfWebSocket implements WebSocketService {
      */
     private static volatile Integer onCount = 0;
 
+    private static String from = "websocket-server";
+    private static String receiver = "";
+
     @OnOpen
     public void onOpen(Session session) {
         onCount = onCount + 1;
@@ -45,6 +48,7 @@ public class SelfWebSocket implements WebSocketService {
     @OnMessage
     public void onMessage(String message, Session session) {
         log.info("Self 收到 {} 的消息: {}", session.getId(), message);
+        receiver = session.getId();
 
         String sendMsg = UUID.randomUUID().toString();
         sendMessage(sendMsg, session);
@@ -59,10 +63,11 @@ public class SelfWebSocket implements WebSocketService {
     public void sendMessage(String body, Session to) {
 
         WSMessage<String> msg = new WSMessage<>();
-        msg.setFrom("222222");
-        msg.setTo("111111");
+        msg.setFrom(from);
+        msg.setTo(receiver);
         msg.setBody(body);
-        msg.setBodyType(body.getClass().toString());
+        msg.setBodyType("text");
+        msg.setMsgType("contact");
 
         try {
             String finalMsg = JacksonUtils.writeObjectAsString(msg);
