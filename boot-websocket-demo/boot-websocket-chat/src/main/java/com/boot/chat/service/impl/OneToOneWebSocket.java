@@ -139,8 +139,6 @@ public class OneToOneWebSocket {
                         log.error("convert map to json fail, {}", e.getCause().getMessage());
                         e.printStackTrace();
                     }
-
-
                 });
     }
 

@@ -3,6 +3,30 @@
 ##相关技术
 SpringBoot | WebSocket
 
+##前言
+<br/> 1、关于单工、半双工、全双工
+<br/> 单工：数据传输只允许在一个方向上的传输，只能一方来发送数据，另一方来接收数据并发送。例如：对讲机
+<br/> 半双工：数据传输允许两个方向上的传输，但是同一时间内，只可以有一方发送或接受消息。例如：打电话
+<br/> 全双工：同时可进行双向传输。例如：websocket
+
+<br/>
+<br/> 2、为什么需要 websocket，而不是单纯使用 http
+
+> http 协议是一种单向的网络协议，在建立连接后，它只允许 Browser/UA（UserAgent）向 Server 发出请求资源后，
+Server 才能返回相应的数据，而 Server 不能主动的推送数据给 Browser/UA
+
+[Websocket 教程-为什么需要 WebSocket？](http://www.ruanyifeng.com/blog/2017/05/websocket.html)
+
+[为什么引入WebSocket协议](https://blog.csdn.net/yl02520/article/details/7298309)
+
+<br/> http 1.0：单工。因为是短连接，客户端发起请求之后，服务端处理完请求并收到客户端的响应后即断开连接
+<br/> http 1.1：半双工。默认开启长连接keep-alive，开启一个连接可发送多个请求。
+<br/> http 2.0：全双工，允许服务端主动向客户端发送数据
+
+[HTTP是单工的还是双工的还是半双工](https://www.jianshu.com/p/3ca180af7dca)
+
+
+
 ##问题与解决
 
 <br/> 1、消息体的内容如何设计
