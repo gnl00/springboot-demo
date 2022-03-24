@@ -1,5 +1,6 @@
 package com.boot.chat.cache;
 
+import com.boot.chat.bean.CacheDo;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.Session;
@@ -15,23 +16,23 @@ import java.util.stream.Collectors;
  */
 
 @Component
-public class SessionStore {
+public class SessionCache {
 
-    private Map<String, Session> localCache;
+    private Map<String, CacheDo> localCache;
 
-    public SessionStore() {
+    public SessionCache() {
         localCache = new ConcurrentHashMap<>();
     }
 
-    public void add(String key, Session value) {
+    public void add(String key, CacheDo value) {
         localCache.put(key, value);
     }
 
-    public void remove(String key) {
+    public void delete(String key) {
         localCache.remove(key);
     }
 
-    public Session get(String key) {
+    public CacheDo get(String key) {
         return localCache.get(key);
     }
 

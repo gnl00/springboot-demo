@@ -1,9 +1,9 @@
 package com.boot.chat.websocket;
 
-import com.boot.chat.cache.SessionStore;
+import com.boot.chat.bean.CacheDo;
+import com.boot.chat.cache.SessionCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.OnClose;
@@ -23,7 +23,7 @@ import javax.websocket.server.ServerEndpoint;
 
 @Slf4j
 @Service
-@ServerEndpoint(value = "/chat/{param}")
+@ServerEndpoint(value = "/chat/{uid}")
 public class WebSocketService {
 
     /**
@@ -37,11 +37,11 @@ public class WebSocketService {
      * https://www.itdaan.com/blog/2019/07/05/6f564e1bbb9c8e2a926dcf59bf9a3841.html
      */
 
-    private static SessionStore store;
+    private static SessionCache cache;
 
     @Autowired
-    public void setStore(SessionStore store) {
-        WebSocketService.store = store;
+    public void setStore(SessionCache cache) {
+        WebSocketService.cache = cache;
     }
 
     /**
@@ -50,24 +50,44 @@ public class WebSocketService {
      * onOpen(Session session, @PathParam("param") String param)
      */
     @OnOpen
-    public void onOpen(Session session) {
-        store.add(session.getId(), session);
-        log.info("open session: {}", session.getId());
+    public void onOpen(Session session, @PathParam("uid") String uid) {
+
+        CacheDo cacheDo = CacheDo.builder().uid(uid).session(session).build();
+        cache.add(session.getId(), cacheDo);
+
+        log.info("{} 登录，session: {} 打开", uid, session.getId());
+
         // throw new RuntimeException("play some tricks");
     }
 
     @OnClose
     public void onClose(Session session) {
-        store.remove(session.getId());
-        log.info("closing session: {}", session.getId());
+
+        String uid = getUid(session.getId());
+        cache.delete(session.getId());
+
+        log.info("{} 退出, session: {} 关闭", uid, session.getId());
     }
 
     @OnError
     public void onError(Session session, Throwable e) {
-        log.error("WebSocketService 有链接 {} 出错啦~ {}", session.getId(), e.getCause().getMessage());
+
+        String uid = getUid(session.getId());
+
+        log.error("用户 {} session {} 出错: {}", uid, session.getId(), e.getCause().getMessage());
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {}
+    public void onMessage(String message, Session session) {
+
+        String uid = getUid(session.getId());
+
+        log.info("收到用户 {} session: {} 消息: {}", uid, session.getId(), message);
+    }
+
+    private String getUid(String sessionId) {
+        CacheDo cacheDo = cache.get(sessionId);
+        return cacheDo.getUid();
+    }
 
 }

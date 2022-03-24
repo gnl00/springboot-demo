@@ -1,11 +1,10 @@
 package com.boot.chat.controller;
 
 import com.boot.chat.bean.User;
-import com.boot.chat.cache.SessionStore;
+import com.boot.chat.cache.SessionCache;
 import com.boot.chat.websocket.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,13 +25,16 @@ public class UserController {
     private WebSocketService webSocketService;
 
     @Autowired
-    private SessionStore store;
+    private SessionCache store;
 
     @PostMapping("/login")
     public Boolean login(@RequestBody User user) {
         if (null != user) {
             // 账号密码正确才进行 websocket 链接
             log.info("account: {}, passwd: {}", user.getAccount(), user.getPassword());
+
+            // 登录成功，分配 websocket 通道
+
             return true;
         }
         return false;
@@ -50,7 +52,7 @@ public class UserController {
 
     // @GetMapping("/close/{sessionId}")
     public String closeConnect(@PathVariable("sessionId") String sessionId) {
-        webSocketService.onClose(store.get(sessionId));
+        webSocketService.onClose(store.get(sessionId).getSession());
         return "operation successful";
     }
 
