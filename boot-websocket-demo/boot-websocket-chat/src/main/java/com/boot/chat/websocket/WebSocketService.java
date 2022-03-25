@@ -1,10 +1,14 @@
 package com.boot.chat.websocket;
 
 import com.boot.chat.bean.CacheDo;
+import com.boot.chat.bean.OnlineDo;
+import com.boot.chat.bean.WSMessage;
 import com.boot.chat.cache.SessionCache;
+import com.boot.chat.util.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -13,6 +17,10 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * WebSocketService
@@ -27,6 +35,18 @@ import javax.websocket.server.ServerEndpoint;
 public class WebSocketService {
 
     /**
+     * key = uid
+     * value = sessionId
+     */
+    public static Map<String, OnlineDo> onlineMap = new ConcurrentHashMap<>();
+
+    /**
+     * key = uid,
+     * value = message lists which have not received
+     */
+    public static Map<String, List<String>> messageCache = new ConcurrentHashMap<>();
+
+    /**
      * @Autowired（依赖注入） 在 SpringBoot 与 WebSocket 集成中存在一个坑，因为 Spring 容器中的 Bean 默认是单例的，
      * 而 WebSocket 每开启一次连接就会创建一个对象，是多实例的，就会出现注入的依赖为 null 的情况
      *
@@ -37,11 +57,20 @@ public class WebSocketService {
      * https://www.itdaan.com/blog/2019/07/05/6f564e1bbb9c8e2a926dcf59bf9a3841.html
      */
 
+    /**
+     * key = sessionId
+     * value = CacheDo
+     */
     private static SessionCache cache;
 
     @Autowired
     public void setStore(SessionCache cache) {
         WebSocketService.cache = cache;
+    }
+
+    private String getUid(String sessionId) {
+        CacheDo cacheDo = cache.get(sessionId);
+        return cacheDo.getUid();
     }
 
     /**
@@ -52,10 +81,17 @@ public class WebSocketService {
     @OnOpen
     public void onOpen(Session session, @PathParam("uid") String uid) {
 
+        String sessionId = session.getId();
+
         CacheDo cacheDo = CacheDo.builder().uid(uid).session(session).build();
-        cache.add(session.getId(), cacheDo);
+        cache.add(sessionId, cacheDo);
+
+        OnlineDo online = OnlineDo.builder().uid(uid).sessionId(sessionId).build();
+        onlineMap.put(uid, online);
 
         log.info("{} 登录，session: {} 打开", uid, session.getId());
+
+        // 登录成功，查看并获取未读消息列表中的消息
 
         // throw new RuntimeException("play some tricks");
     }
@@ -65,6 +101,8 @@ public class WebSocketService {
 
         String uid = getUid(session.getId());
         cache.delete(session.getId());
+
+        onlineMap.remove(uid);
 
         log.info("{} 退出, session: {} 关闭", uid, session.getId());
     }
@@ -81,13 +119,70 @@ public class WebSocketService {
     public void onMessage(String message, Session session) {
 
         String uid = getUid(session.getId());
-
         log.info("收到用户 {} session: {} 消息: {}", uid, session.getId(), message);
+
+        messageDelivery(message);
+
+        // sendToSelf(message, session);
     }
 
-    private String getUid(String sessionId) {
-        CacheDo cacheDo = cache.get(sessionId);
-        return cacheDo.getUid();
+    private void sendToSelf(String message, Session session) {
+        WSMessage srcMsg = JacksonUtils.readValue(message);
+        WSMessage<Object> objMsg = WSMessage.builder().from("server").to(srcMsg.getFrom()).body("发送的消息内容为: " + srcMsg.getBody()).build();
+        String jsonMsg = JacksonUtils.writeObjectAsString(objMsg);
+        sendMessage(jsonMsg, session);
+    }
+
+    private void messageDelivery(String message) {
+
+        WSMessage messageObj = JacksonUtils.readValue(message);
+
+        String toId = messageObj.getTo();
+
+        log.info("消息 to {} 处理转发逻辑...", toId);
+
+        // 判断 to 是否在线
+
+        if (onlineMap.containsKey(toId)) {
+            // 在线，发送消息
+            String toSessionId = onlineMap.get(toId).getSessionId();
+
+            log.info("用户 {} 在线 session: {}，消息转发中...", toId, toSessionId);
+
+            CacheDo toDo = cache.get(toSessionId);
+            Session toSession = toDo.getSession();
+
+            sendMessage(message, toSession);
+        } else {
+            // 不在线，进行消息存储
+            log.info("用户 {} 不在线，消息存储中...", toId);
+
+            // 首先查看消息 cache 中是否已经存在，已经存在的话添加到已存在的 list 中，
+            // 不存在则新创建 list 进行存储
+            if (messageCache.containsKey(toId)) {
+                List<String> messages = messageCache.get(toId);
+                messages.add(message);
+            } else {
+                List<String> messages = new ArrayList<>();
+                messages.add(message);
+                messageCache.put(toId, messages);
+            }
+        }
+
+    }
+
+    private void sendMessage(String message, Session to) {
+        try {
+            to.getBasicRemote().sendText(message);
+        } catch (IOException e) {
+            log.info("消息发送失败: {}", e.getCause().getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public List<OnlineDo> getContacts() {
+        List<OnlineDo> list = onlineMap.values().stream().collect(Collectors.toList());
+        return list;
     }
 
 }

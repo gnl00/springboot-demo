@@ -50,22 +50,16 @@ public class OneToManyWebSocket implements WebSocketService {
     public void onMessage(String message, Session session) {
         log.info("ToMany 收到 {} 的消息: {}", session.getId(), message);
 
-        try {
+        WSMessage msg = JacksonUtils.readValue(message);
 
-            WSMessage msg = JacksonUtils.readValue(message);
+        WSMessage objMsg = WSMessage.builder().from(session.getId()).to(msg.getTo()).body(msg.getBody()).date(msg.getDate()).build();
 
-            WSMessage objMsg = WSMessage.builder().from(session.getId()).to(msg.getTo()).body(msg.getBody()).bodyType(msg.getBodyType()).date(msg.getDate()).build();
+        String jsonMsg = JacksonUtils.writeObjectAsString(objMsg);
 
-            String jsonMsg = JacksonUtils.writeObjectAsString(objMsg);
-
-            userMap.keySet().stream().filter(toId -> !toId.equals(session.getId())).forEach(member -> {
-                log.info("ToMany 发送 {} 给 {}", jsonMsg, member);
-                messageDelivery(jsonMsg, userMap.get(member));
-            });
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        userMap.keySet().stream().filter(toId -> !toId.equals(session.getId())).forEach(member -> {
+            log.info("ToMany 发送 {} 给 {}", jsonMsg, member);
+            messageDelivery(jsonMsg, userMap.get(member));
+        });
 
     }
 

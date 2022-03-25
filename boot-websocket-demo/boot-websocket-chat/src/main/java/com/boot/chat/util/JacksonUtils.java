@@ -30,12 +30,26 @@ public class JacksonUtils {
     /**
      * Object to json
      */
-    public static String writeObjectAsString(Object obj) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(obj);
+    public static String writeObjectAsString(Object obj) {
+        String jsonMsg = null;
+        try {
+            jsonMsg = objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("convert object to json failure, error: {}", e.getCause().getMessage());
+            e.printStackTrace();
+        }
+
+        return jsonMsg;
     }
 
-    public static WSMessage readValue(String jsonStr) throws JsonProcessingException {
-        WSMessage msgObj = objectMapper.readValue(jsonStr, WSMessage.class);
+    public static WSMessage readValue(String jsonStr) {
+        WSMessage msgObj = null;
+        try {
+            msgObj = objectMapper.readValue(jsonStr, WSMessage.class);
+        } catch (JsonProcessingException e) {
+            log.error("convert json value to object failure, error: {}", e.getCause().getMessage());
+            e.printStackTrace();
+        }
         return msgObj;
     }
 

@@ -3,7 +3,6 @@ package com.boot.chat.cache;
 import com.boot.chat.bean.CacheDo;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.Session;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;

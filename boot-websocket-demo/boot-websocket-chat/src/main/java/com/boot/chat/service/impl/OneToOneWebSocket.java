@@ -53,43 +53,32 @@ public class OneToOneWebSocket {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message, Session session) throws InterruptedException {
         log.info("ToOne 收到 {} 的消息: {}", session.getId(), message);
-        try {
+        // 收到消息，格式转为 WSMessage
+        WSMessage msgObj = JacksonUtils.readValue(message);
+        log.info("ToOne json to obj: {}", msgObj.toString());
 
-            // 收到消息，格式转为 WSMessage
-            WSMessage msgObj = JacksonUtils.readValue(message);
-            log.info("ToOne json to obj: {}", msgObj.toString());
+        // 消息分发给对应的接收方
+        String toId = msgObj.getTo();
 
-            // 消息分发给对应的接收方
-            String toId = msgObj.getTo();
+        if ("websocket-server".equals(toId)) {
+            String msgBody = UUID.randomUUID().toString();
 
-            if ("websocket-server".equals(toId)) {
-                String msgBody = UUID.randomUUID().toString();
+            WSMessage<String> msg = new WSMessage<>();
+            msg.setFrom(toId);
+            msg.setTo(session.getId());
+            msg.setBody(msgBody);
 
-                WSMessage<String> msg = new WSMessage<>();
-                msg.setFrom(toId);
-                msg.setTo(session.getId());
-                msg.setBody(msgBody);
-                msg.setBodyType("text");
-                msg.setMsgType("contact");
+            String finalMsg = JacksonUtils.writeObjectAsString(msg);
+            TimeUnit.SECONDS.sleep(2);
 
-                String finalMsg = JacksonUtils.writeObjectAsString(msg);
-                TimeUnit.SECONDS.sleep(2);
+            log.info("Self 发送消息: {} 给 {}", finalMsg, session.getId());
+            sendMessage(finalMsg, session);
 
-                log.info("Self 发送消息: {} 给 {}", finalMsg, session.getId());
-                sendMessage(finalMsg, session);
-
-            } else {
-                Session toSession = onLineUser.get(toId);
-                messageDelivery(message, toSession);
-            }
-
-        } catch (JsonProcessingException e) {
-            log.error("convert json to object fail, {}", e.getCause().getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } else {
+            Session toSession = onLineUser.get(toId);
+            messageDelivery(message, toSession);
         }
     }
 
@@ -104,14 +93,8 @@ public class OneToOneWebSocket {
         msgMap.put("msgType", "init");
         msgMap.put("online", onLineUser.keySet().stream().filter(uid -> uid != session.getId()).collect(Collectors.toList()));
 
-        try {
-            String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
-            sendMessage(jsonStr, session);
-
-        } catch (JsonProcessingException e) {
-            log.error("convert map to json fail, {}", e.getCause().getMessage());
-            e.printStackTrace();
-        }
+        String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
+        sendMessage(jsonStr, session);
 
     }
 
@@ -131,14 +114,8 @@ public class OneToOneWebSocket {
                     msgMap.put("msgType", "update");
                     msgMap.put("online", onLineUser.keySet().stream().filter(onlineId -> !onlineId.equals(sessionId)).collect(Collectors.toSet()));
 
-                    try {
-                        String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
-                        sendMessage(jsonStr, onLineUser.get(sessionId));
-
-                    } catch (JsonProcessingException e) {
-                        log.error("convert map to json fail, {}", e.getCause().getMessage());
-                        e.printStackTrace();
-                    }
+                    String jsonStr = JacksonUtils.writeObjectAsString(msgMap);
+                    sendMessage(jsonStr, onLineUser.get(sessionId));
                 });
     }
 

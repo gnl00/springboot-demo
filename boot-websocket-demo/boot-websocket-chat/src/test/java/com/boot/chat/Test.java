@@ -1,11 +1,13 @@
 package com.boot.chat;
 
+import com.boot.chat.bean.OnlineDo;
 import com.boot.chat.bean.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * TODO
@@ -44,6 +46,38 @@ public class Test {
 
         System.out.println(src);
         System.out.println(target);
+
+    }
+
+    @org.junit.jupiter.api.Test
+    public void test2() {
+        Map<String, List> map = new HashMap<>();
+
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        map.put("list", list);
+
+        System.out.println(map);
+
+        list.add("2");
+
+        System.out.println(map);
+    }
+
+    @org.junit.jupiter.api.Test
+    public void test3() {
+
+        List<OnlineDo> list = new ArrayList<>();
+        list.add(OnlineDo.builder().uid("a").sessionId("1").build());
+        list.add(OnlineDo.builder().uid("b").sessionId("2").build());
+        list.add(OnlineDo.builder().uid("c").sessionId("3").build());
+
+        Map<String, OnlineDo> map = new HashMap<>();
+        map.put("a", OnlineDo.builder().uid("a").sessionId("1").build());
+        map.put("b", OnlineDo.builder().uid("b").sessionId("2").build());
+        map.put("c", OnlineDo.builder().uid("c").sessionId("3").build());
+
+        System.out.println(list);
 
     }
 

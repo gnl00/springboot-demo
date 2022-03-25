@@ -1,5 +1,6 @@
 package com.boot.chat.controller;
 
+import com.boot.chat.bean.OnlineDo;
 import com.boot.chat.bean.User;
 import com.boot.chat.cache.SessionCache;
 import com.boot.chat.websocket.WebSocketService;
@@ -40,9 +41,9 @@ public class UserController {
         return false;
     }
 
-    @GetMapping("/list")
-    public List<String> userList() {
-        return store.list();
+    @GetMapping("/contacts")
+    public List<OnlineDo> userList() {
+        return webSocketService.getContacts();
     }
 
     @GetMapping("/count")
