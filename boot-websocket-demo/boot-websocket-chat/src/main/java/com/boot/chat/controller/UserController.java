@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * WebSocketController
@@ -49,6 +50,24 @@ public class UserController {
     @GetMapping("/count")
     public Integer userCount() {
         return userList().size();
+    }
+
+    @PostMapping("/group")
+    public Boolean createGroup(@RequestBody Map<String, String> map) {
+        try {
+            webSocketService.createGroup(map.get("groupId"), map.get("uid"));
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @PutMapping("/group")
+    public void updateGroup(@RequestBody Map<String, String> map) {
+        webSocketService.updateGroup(map.get("groupId"), map.get("uid"));
     }
 
     // @GetMapping("/close/{sessionId}")

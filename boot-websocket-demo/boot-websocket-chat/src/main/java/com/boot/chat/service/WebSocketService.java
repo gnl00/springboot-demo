@@ -9,6 +9,7 @@ import javax.websocket.Session;
  * @since 2022/3/16 15:37
  */
 
+@Deprecated
 public interface WebSocketService {
 
     /**

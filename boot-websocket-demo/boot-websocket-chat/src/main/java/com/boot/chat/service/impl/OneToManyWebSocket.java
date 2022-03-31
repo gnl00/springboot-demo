@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2022/3/16 15:33
  */
 
+@Deprecated
 @Slf4j
 @Service
 @ServerEndpoint(value = "/chat/oneToMany")

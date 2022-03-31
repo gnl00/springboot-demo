@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * @since 2022/3/16 15:34
  */
 
+@Deprecated
 @Slf4j
 @Service
 @ServerEndpoint(value = "/chat/oneToOne")

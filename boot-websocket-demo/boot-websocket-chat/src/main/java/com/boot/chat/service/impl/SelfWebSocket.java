@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2022/3/16 15:32
  */
 
+@Deprecated
 @Slf4j
 @ServerEndpoint(value = "/chat/self")
 @Service

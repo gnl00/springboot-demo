@@ -47,6 +47,12 @@ public class WebSocketService {
     public static Map<String, List<String>> messageCache = new ConcurrentHashMap<>();
 
     /**
+     * key = groupId,
+     * value = groupMember list
+     */
+    public static Map<String, Set<String>> groups = new ConcurrentHashMap<>();
+
+    /**
      * @Autowired（依赖注入） 在 SpringBoot 与 WebSocket 集成中存在一个坑，因为 Spring 容器中的 Bean 默认是单例的，
      * 而 WebSocket 每开启一次连接就会创建一个对象，是多实例的，就会出现注入的依赖为 null 的情况
      *
@@ -126,6 +132,7 @@ public class WebSocketService {
         // sendToSelf(message, session);
     }
 
+    @Deprecated
     private void sendToSelf(String message, Session session) {
         WSMessage srcMsg = JacksonUtils.readValue(message);
         WSMessage<Object> objMsg = WSMessage.builder().from("server").to(srcMsg.getFrom()).body("发送的消息内容为: " + srcMsg.getBody()).build();
@@ -137,12 +144,20 @@ public class WebSocketService {
 
         WSMessage messageObj = JacksonUtils.readValue(message);
 
+        if (!messageObj.getGroup()) {
+            sendToSingle(messageObj, message);
+        } else {
+            sendToGroup(messageObj, message);
+        }
+
+    }
+
+    private void sendToSingle(WSMessage messageObj, String message) {
         String toId = messageObj.getTo();
 
         log.info("消息 to {} 处理转发逻辑...", toId);
 
         // 判断 to 是否在线
-
         if (onlineMap.containsKey(toId)) {
             // 在线，发送消息
             String toSessionId = onlineMap.get(toId).getSessionId();
@@ -168,7 +183,27 @@ public class WebSocketService {
                 messageCache.put(toId, messages);
             }
         }
+    }
 
+    private void sendToGroup(WSMessage messageObj, String message) {
+        String groupId = messageObj.getTo();
+
+        log.info("群发消息 to {} 处理转发逻辑...", groupId);
+
+        if (groups.containsKey(groupId)) {
+            Set<String> member = groups.get(groupId);
+            Set<String> memberSet = member.stream().filter(m -> !m.equals(messageObj.getFrom())).collect(Collectors.toSet());
+            for (String uid : memberSet) {
+                OnlineDo onlineDo = onlineMap.get(uid);
+
+                // 过滤不在线的用户
+                if (Objects.nonNull(onlineDo)) {
+                    CacheDo cacheDo = cache.get(onlineDo.getSessionId());
+                    Session toSession = cacheDo.getSession();
+                    sendMessage(message, toSession);
+                }
+            }
+        }
     }
 
     private void sendMessage(String message, Session to) {
@@ -183,6 +218,22 @@ public class WebSocketService {
     public List<OnlineDo> getContacts() {
         List<OnlineDo> list = onlineMap.values().stream().collect(Collectors.toList());
         return list;
+    }
+
+    public void createGroup(String groupId, String uid) {
+        Set<String> member = new HashSet<>();
+        member.add(uid);
+        groups.put(groupId, member);
+
+        log.info("create group: {} success", groupId);
+    }
+
+    public void updateGroup(String groupId, String uid) {
+        Set<String> member = groups.get(groupId);
+        if (!member.contains(uid)) {
+            log.info("update group: {}, member: {}, success", groupId, uid);
+            member.add(uid);
+        }
     }
 
 }
