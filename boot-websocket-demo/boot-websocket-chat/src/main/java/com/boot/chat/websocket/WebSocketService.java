@@ -144,7 +144,9 @@ public class WebSocketService {
 
         WSMessage messageObj = JacksonUtils.readValue(message);
 
-        if (!messageObj.getGroup()) {
+        log.info(messageObj.toString());
+
+        if (Objects.isNull(messageObj.getGroup())) {
             sendToSingle(messageObj, message);
         } else {
             sendToGroup(messageObj, message);

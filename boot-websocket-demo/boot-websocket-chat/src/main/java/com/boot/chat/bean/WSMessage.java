@@ -34,6 +34,6 @@ public class WSMessage<T> {
 
     private Boolean read = false;
 
-    private Boolean group = false;
+    private WSGroup group;
 
 }
