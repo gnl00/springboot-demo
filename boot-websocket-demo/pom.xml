@@ -12,6 +12,7 @@
     <modules>
         <module>boot-websocket-sample</module>
         <module>boot-websocket-chat</module>
+        <module>boot-websocket-call</module>
     </modules>
 
     <parent>
