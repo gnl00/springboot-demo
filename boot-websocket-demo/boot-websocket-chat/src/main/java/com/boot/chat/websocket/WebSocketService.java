@@ -146,7 +146,7 @@ public class WebSocketService {
 
         log.info(messageObj.toString());
 
-        if (Objects.isNull(messageObj.getGroup())) {
+        if (Objects.isNull(messageObj.getGroup().getGid())) {
             sendToSingle(messageObj, message);
         } else {
             sendToGroup(messageObj, message);
