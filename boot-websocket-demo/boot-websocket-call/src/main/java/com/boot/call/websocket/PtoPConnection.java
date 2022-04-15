@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Connection
+ * PtoPConnection
  *
  * @author lgn
  * @since 2022/4/7 10:00
@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@ServerEndpoint("/call/{id}")
-public class Connection {
+@ServerEndpoint("/pToP/{id}")
+public class PtoPConnection {
 
     /**
      * key = uid

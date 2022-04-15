@@ -1,5 +1,8 @@
 package com.boot.call.websocket;
 
+import com.boot.call.bean.WebSocketMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -42,29 +45,40 @@ public class PtoManyConnection {
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("id") String uid) {
+    public void onClose(Session session, @PathParam("id") String uid, @PathParam("roomId") String roomId) {
         users.remove(uid);
-        rooms.remove(uid);
+        if (rooms.containsKey(roomId)) {
+            rooms.get(roomId).remove(uid);
+        }
         log.info("close session: {}, uid: {}", session.getId(), uid);
     }
 
     @OnError
-    public void onError(Session session, Throwable e, @PathParam("id") String uid) {
+    public void onError(Session session, Throwable e, @PathParam("id") String uid, @PathParam("roomId") String roomId) {
         users.remove(uid);
-        rooms.remove(uid);
+        if (rooms.containsKey(roomId)) {
+            rooms.get(roomId).remove(uid);
+        }
         log.error("error in session: {}, error message: {}", session.getId(), e.getCause().getMessage());
     }
 
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("id") String uid, @PathParam("roomId") String roomId) {
-        log.info("receive from uid: {}, roomId: {}, on session: {}, message: {}", uid, roomId, session.getId(), message);
+        log.info("receive from roomId: {}, uid: {}, on session: {}, message: {}", roomId, uid, session.getId(), message);
 
-        // get the right room and send to every member
-        if (rooms.containsKey(roomId)) {
-            List<String> members = rooms.get(roomId);
-            for (String member : members) {
-                sendMessage(message, users.get(member));
-            }
+        // covert String message to Object
+        JsonMapper jm = new JsonMapper();
+        try {
+            WebSocketMessage webSocketMessage = jm.readValue(message, WebSocketMessage.class);
+            log.info("webSocketMessage: {}", webSocketMessage.toString());
+            // get target
+            String target = webSocketMessage.getTarget();
+            // send message to the right target
+            sendMessage(message, users.get(target));
+
+        } catch (JsonProcessingException e) {
+            log.error("covert message to object failed, ERROR: {}", e.getCause().getMessage());
+            e.printStackTrace();
         }
     }
 

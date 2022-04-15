@@ -1,6 +1,5 @@
 package com.boot.call.controller;
 
-import com.boot.call.websocket.Connection;
 import com.boot.call.websocket.PtoManyConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
