@@ -54,8 +54,8 @@ public class PtoPConnection {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("id") String uid, @PathParam("remoteId") String remoteId) {
-        log.info("receive from: {}, on session: {}, remoteId: {}, message: {}", uid, session.getId(), remoteId, message);
+    public void onMessage(String message, Session session, @PathParam("id") String uid) {
+        log.info("receive from: {}, on session: {}, message: {}", uid, session.getId(), message);
         JsonMapper jsonMapper = new JsonMapper();
         try {
             WebSocketMessage socketMessage = jsonMapper.readValue(message, WebSocketMessage.class);
