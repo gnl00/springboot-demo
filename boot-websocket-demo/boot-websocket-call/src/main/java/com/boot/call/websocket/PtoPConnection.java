@@ -1,5 +1,8 @@
 package com.boot.call.websocket;
 
+import com.boot.call.bean.WebSocketMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +14,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * PtoPConnection
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@ServerEndpoint("/pToP/{id}")
+@ServerEndpoint("/pTop/{id}")
 public class PtoPConnection {
 
     /**
@@ -47,19 +48,21 @@ public class PtoPConnection {
     }
 
     @OnError
-    public void onError(Session session, Throwable e) {
+    public void onError(Session session, Throwable e, @PathParam("id") String uid) {
+        users.remove(uid);
         log.error("error in session: {}, error message: {}", session.getId(), e.getCause().getMessage());
     }
 
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("id") String uid) {
-        log.info("receive from: {}, on session: {}, message: {}", uid, session.getId(), message);
-
-        List<String> keys = users.keySet().stream().filter(uKey -> !uKey.equals(uid)).collect(Collectors.toList());
-        log.info(keys.toString());
-        for (String key : keys) {
-            // send message
-            sendMessage(message, users.get(key));
+    public void onMessage(String message, Session session, @PathParam("id") String uid, @PathParam("remoteId") String remoteId) {
+        log.info("receive from: {}, on session: {}, remoteId: {}, message: {}", uid, session.getId(), remoteId, message);
+        JsonMapper jsonMapper = new JsonMapper();
+        try {
+            WebSocketMessage socketMessage = jsonMapper.readValue(message, WebSocketMessage.class);
+            Session toSession = users.get(socketMessage.getTarget());
+            sendMessage(message, toSession);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 
