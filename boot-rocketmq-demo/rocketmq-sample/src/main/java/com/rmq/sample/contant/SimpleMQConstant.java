@@ -7,7 +7,7 @@ package com.rmq.sample.contant;
  * @since 2022/2/23 10:39
  */
 
-public class SimpleMQCanstant {
+public class SimpleMQConstant {
 
     public static final String NAME_SERVER = "localhost:9876";
 

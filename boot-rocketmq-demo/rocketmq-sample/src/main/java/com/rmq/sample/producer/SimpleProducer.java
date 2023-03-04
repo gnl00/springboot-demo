@@ -1,11 +1,9 @@
 package com.rmq.sample.producer;
 
-import com.rmq.sample.contant.SimpleMQCanstant;
+import com.rmq.sample.contant.SimpleMQConstant;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.SendCallback;
-import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 
@@ -22,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 public class SimpleProducer {
     public static void main(String[] args) {
         // 1、创建生产者，并指定生产者组
-        DefaultMQProducer producer = new DefaultMQProducer(SimpleMQCanstant.PRODUCER_GROUP);
+        DefaultMQProducer producer = new DefaultMQProducer(SimpleMQConstant.PRODUCER_GROUP);
         // 2、指定 nameserver 地址
-        producer.setNamesrvAddr(SimpleMQCanstant.NAME_SERVER);
+        producer.setNamesrvAddr(SimpleMQConstant.NAME_SERVER);
 
         try {
             // 3、启动生产者
@@ -34,7 +32,7 @@ public class SimpleProducer {
 
             // 5、发送同步消息
             for (int i = 1; i < 5; i++) {
-                Message message = new Message(SimpleMQCanstant.TOPIC_DEFAULT, "tag_sync", ("hi, this is a SYNC msg from SimpleProducer " + i).getBytes(StandardCharsets.UTF_8));
+                Message message = new Message(SimpleMQConstant.TOPIC_DEFAULT, "tag_sync", ("hi, this is a SYNC msg from SimpleProducer " + i).getBytes(StandardCharsets.UTF_8));
 
                 producer.send(message, 10000);
 

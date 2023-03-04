@@ -1,7 +1,6 @@
 package com.rmq.sample.consumer;
 
-import com.rmq.sample.contant.SimpleMQCanstant;
-import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
+import com.rmq.sample.contant.SimpleMQConstant;
 import org.apache.rocketmq.client.consumer.DefaultMQPullConsumer;
 import org.apache.rocketmq.client.consumer.PullResult;
 import org.apache.rocketmq.client.exception.MQBrokerException;
@@ -12,7 +11,6 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,14 +28,14 @@ public class SimplePullConsumer {
     private static final Map<MessageQueue, Long> OFFSET_TABLE = new HashMap<>();
 
     public static void main(String[] args) {
-        DefaultMQPullConsumer consumer = new DefaultMQPullConsumer(SimpleMQCanstant.CONSUMER_GROUP);
-        consumer.setNamesrvAddr(SimpleMQCanstant.NAME_SERVER);
+        DefaultMQPullConsumer consumer = new DefaultMQPullConsumer(SimpleMQConstant.CONSUMER_GROUP);
+        consumer.setNamesrvAddr(SimpleMQConstant.NAME_SERVER);
 
         try {
             consumer.start();
 
             // 获取 topic 下的所有队列
-            Collection<MessageQueue> queues = consumer.fetchSubscribeMessageQueues(SimpleMQCanstant.TOPIC_DEFAULT);
+            Collection<MessageQueue> queues = consumer.fetchSubscribeMessageQueues(SimpleMQConstant.TOPIC_DEFAULT);
 
             System.out.println(queues);
             System.out.println("队列大小： " + queues.size());
