@@ -29,9 +29,17 @@ public class RMQListenerAspect {
     private void mqCutPont() {}
 
     @Around("mqCutPont()")
-    public void aroundRMQListener(ProceedingJoinPoint jp) {
-        log.info("环绕通知开始。。。");
-        log.info("执行的方法名: {}", jp.getSignature().getName());
+    public Object aroundRMQListener(ProceedingJoinPoint jp) throws Throwable {
+        log.info("=====> 环绕通知开始 <=====");
+        log.info("执行方法名 ===> {}", jp.getSignature().getName());
+
+        log.info("before proceed");
+
+        Object result = jp.proceed();
+
+        log.info("after proceed");
+
+        return result;
     }
 
 }

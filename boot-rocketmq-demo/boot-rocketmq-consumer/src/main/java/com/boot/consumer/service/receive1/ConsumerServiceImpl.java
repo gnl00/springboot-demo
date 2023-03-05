@@ -1,8 +1,6 @@
 package com.boot.consumer.service.receive1;
 
 import com.boot.consumer.annotation.RMQListener;
-import com.boot.consumer.service.BaseService;
-import com.boot.consumer.service.ConsumerService;
 import com.boot.rocketmq.canstant.RMQConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -18,18 +16,14 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RocketMQMessageListener(topic = RMQConstant.TP_BOOT, consumerGroup = "${spring.application.name}")
-public class ConsumerServiceImpl implements BaseService, ConsumerService, RocketMQListener<String> {
+@RocketMQMessageListener(topic = RMQConstant.topic, consumerGroup = "${spring.application.name}")
+public class ConsumerServiceImpl implements RocketMQListener<String> {
 
-    @RMQListener(consumerGroup = "${spring.application.name}", topic = RMQConstant.TP_BOOT, tag = "*", type = String.class)
+    @RMQListener(consumerGroup = "${spring.application.name}", topic = RMQConstant.topic, tag = "*", type = String.class)
     @Override
     public void onMessage(String message) {
-        log.info(System.currentTimeMillis() + " ConsumerServiceImpl 收到消息: {}", message);
-        log.info(message);
+        log.info("Time ==> {}", System.currentTimeMillis());
+        log.info("收到消息 ==> {}", message);
     }
 
-    @Override
-    public void onBaseMessage(Object message) {
-
-    }
 }

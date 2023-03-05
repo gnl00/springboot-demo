@@ -1,7 +1,6 @@
 package com.boot.consumer.service.receive2;
 
 import com.boot.consumer.annotation.RMQListener;
-import com.boot.consumer.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +12,9 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class ConsumerServiceImpl2 implements BaseService {
+public class ConsumerServiceImpl2 {
 
     @RMQListener(topic = "myTopic", tag = "myTag", consumerGroup = "myG", type = String.class)
-    public void onMyMessage() {
+    public void onMyMessage() {}
 
-    }
-
-    @Override
-    public void onBaseMessage(Object message) {
-
-    }
 }

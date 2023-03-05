@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * ProducerController
  *
@@ -18,13 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/prod")
 public class ProducerController {
 
-    @Autowired
-    private ProducerService producerService;
+    private static volatile Map<String, Object> retMap = new HashMap<>();
 
-    @GetMapping("/send")
-    public String send(@RequestParam(value = "msg", required = true) String msg) {
-        producerService.send(msg);
-        return "send success: " + msg;
+    static {
+        retMap.put("code", 200);
+        retMap.put("message", "success");
+        retMap.put("data", null);
+    }
+
+    @Autowired
+    private ProducerService producer;
+
+    @GetMapping("/test")
+    public Map<String, Object> testConnect() {
+        return retMap;
+    }
+
+    @GetMapping("/sendSync")
+    public Map<String, Object> sendSync(@RequestParam(value = "msg") String msg) {
+        producer.sendSync(msg);
+
+        retMap.put("data", msg);
+        return retMap;
+    }
+
+    @GetMapping("/sendAsync")
+    public Map<String, Object> sendAsync(@RequestParam(value = "msg") String msg) {
+        producer.sendAsync(msg);
+
+        retMap.put("data", msg);
+        return retMap;
     }
 
 }

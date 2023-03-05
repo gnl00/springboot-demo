@@ -1,6 +1,7 @@
 package com.rmq.sample.consumer;
 
 import com.rmq.sample.contant.SimpleMQConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since 2022/2/17 14:07
  */
 
+@Slf4j
 public class SimpleConsumer {
     public static void main(String[] args) {
         // 1、创建消费者，并指定消费者组
@@ -50,6 +52,7 @@ public class SimpleConsumer {
 
             // 5、启动消费者
             consumer.start();
+            log.info("SimpleConsumer started");
 
         } catch (MQClientException e) {
             e.printStackTrace();

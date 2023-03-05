@@ -13,6 +13,9 @@ public interface ProducerService {
      * @param msg
      * @return java.lang.Boolean
      */
-    Boolean send(String msg);
+
+    void sendSync(String msg);
+
+    void sendAsync(String msg);
 
 }
