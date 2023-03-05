@@ -1,7 +1,7 @@
 # springboot-demo
 
-## 开始
-### maven 国内镜像源
+## Start
+### maven 镜像源
 ```xml
 <mirror>
     <id>aliyun-public</id>

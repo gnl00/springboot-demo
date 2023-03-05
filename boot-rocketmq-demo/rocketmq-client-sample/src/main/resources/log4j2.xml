@@ -2,7 +2,11 @@
 <!--日志级别以及优先级排序：    OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
 <Configuration status="WARN">
     <properties>
-        <Property name="log_path">./logs</Property>
+        <Property name="log_path" value="./logs" />
+        <!-- Input your service name here -->
+        <Property name="applicationName" value="rocketmq-client-sample" />
+        <Property name="file_suffix" value="log" />
+        <Property name="full_name" value="${log_path}/${applicationName}.${file_suffix}" />
     </properties>
     <!--先定义所有的appender-->
     <appenders>
@@ -14,7 +18,7 @@
 
         <!--all级别日志-->
         <RollingFile name="AllFileAppender"
-                     fileName="${log_path}/all.log"
+                     fileName="${full_name}"
                      filePattern="${log_path}/$${date:yyyy-MM}/all-%d{yyyy-MM-dd}-%i.log.gz">
             <!--设置日志格式-->
             <PatternLayout>
