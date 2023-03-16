@@ -1,7 +1,12 @@
 package com.boot.consumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import javax.annotation.Resource;
 
 /**
  * ConsumerMainApp
@@ -13,6 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MQConsumer {
     public static void main(String[] args) {
-        SpringApplication.run(MQConsumer.class, args);
+        ApplicationContext ac = SpringApplication.run(MQConsumer.class, args);
+        ac.getEnvironment();
     }
 }

@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/test?useSSL=false
+  application:
+    name: boot-mybatis-demo
+
+mybatis:
+  configuration:
+    aggressive-lazy-loading: on
+    map-underscore-to-camel-case: on
+    cache-enabled: on
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.demo.entity
+  mapper-locations: classpath:mapper/*
