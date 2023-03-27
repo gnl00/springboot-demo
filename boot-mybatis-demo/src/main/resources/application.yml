@@ -1,8 +1,8 @@
 spring:
   datasource:
     username: root
-    password: 123456
-    url: jdbc:mysql://localhost:3306/test?useSSL=false
+    password:
+    url: jdbc:mysql://localhost:3306/db_test?useSSL=false
   application:
     name: boot-mybatis-demo
 
