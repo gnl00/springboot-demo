@@ -1,0 +1,15 @@
+server:
+  port: 8100
+
+spring:
+  application:
+    name: boot-kafka-producer
+  kafka:
+    producer:
+      client-id: boot-kafka-producer
+      bootstrap-servers: localhost:9092
+      # key-serializer: 默认使用 StringSerializer.class
+      # value-serializer: 默认使用 StringSerializer.class
+      acks: -1
+      retries: 5
+
