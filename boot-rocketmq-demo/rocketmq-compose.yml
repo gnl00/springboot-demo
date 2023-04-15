@@ -1,5 +1,6 @@
 # docker pull apache/rocketmq:4.9.4
 # docker-compose -f rocketmq-compose.yml up -d
+# 启动后将 mqbroker 中的配置文件 broker.conf 中 brokerIP1 修改为本机 IP
 version: '3'
 services:
   #Service for nameserver

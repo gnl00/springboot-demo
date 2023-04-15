@@ -32,7 +32,6 @@ public class SimpleConsumer {
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         try {
 
-
             // 3、指定 topic、tags，多个 tag 使用“||”隔开，所有 tag 使用“*”
             consumer.subscribe(SimpleMQConstant.TOPIC_DEFAULT, "*");
 

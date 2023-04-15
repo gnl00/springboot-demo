@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SimpleProducer
+ * 生产之前先检查 broker.conf 配置文件中的 brokerIP1 是否为本机 IP
  *
  * @author lgn
  * @since 2022/2/17 14:06
@@ -38,9 +39,8 @@ public class SimpleProducer {
             // 5、发送同步消息
             // sendSync(producer);
 
-            // 6、发送异步消息
-            sendAsync(producer);
-
+            // 6、发送消息
+            sendSync(producer);
 
             // 7、发送单向消息
             // 主要用于生产者不太关心发送结果的情况下，比如日志发送
