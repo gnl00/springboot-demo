@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SimpleProducer
- * 生产之前先检查 broker.conf 配置文件中的 brokerIP1 是否为本机 IP
+ * <p>生产之前先检查 broker.conf 配置文件中的 brokerIP1 是否为本机 IP</p>
  *
  * @author lgn
  * @since 2022/2/17 14:06
