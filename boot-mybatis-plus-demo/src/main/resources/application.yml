@@ -2,13 +2,23 @@ spring:
   application:
     name: @project.artifactId@
   datasource:
-    username: root
-    password:
-    url: jdbc:mysql://localhost:3306/db_test
+    usr:
+      username: root
+      password:
+      jdbc-url: jdbc:mysql://localhost:3306/db_test
+    emp:
+      username: root
+      password:
+      jdbc-url: jdbc:mysql://localhost:3306/employees
+#    username: root
+#    password:
+#    url: jdbc:mysql://localhost:3306/employees
 
 mybatis-plus:
+  type-aliases-package: "com.demo.entity" # 配置多数据源后这项配置将失效
   configuration:
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+    map-underscore-to-camel-case: true
 
 logging:
   level:

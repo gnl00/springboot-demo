@@ -1,8 +1,7 @@
 package com.demo;
 
-import com.demo.entity.User;
-import com.demo.mapper.UserMapper;
-import com.demo.service.UserService;
+import com.demo.entity.usr.User;
+import com.demo.mapper.usr.UserMapper;
 import com.demo.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.List;
  * @since 2023/5/1
  */
 @SpringBootTest
-public class MainTest {
+public class UserTest {
 
     @Autowired
     private UserMapper userMapper;
@@ -41,5 +40,11 @@ public class MainTest {
     @Test
     public void test2() {
         System.out.println(appName);
+    }
+
+    @Test
+    public void test3() {
+        User user = userMapper.selectOneById(1L);
+        System.out.println(user);
     }
 }

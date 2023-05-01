@@ -1,7 +1,7 @@
-package com.demo.mapper;
+package com.demo.mapper.usr;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.demo.entity.User;
+import com.demo.entity.usr.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,4 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
+    User selectOneById(Long id);
 }
