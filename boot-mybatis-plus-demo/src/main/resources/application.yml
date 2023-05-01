@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: @project.artifactId@
+  datasource:
+    username: root
+    password:
+    url: jdbc:mysql://localhost:3306/db_test
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+logging:
+  level:
+    com.demo: debug
